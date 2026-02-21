@@ -1,9 +1,21 @@
 import { Mic, MicOff, RefreshCw } from "lucide-react";
+import type { Difficulty } from "./FluencyApp";
+
+const DIFFICULTY_CONFIG: Record<Difficulty, { label: string; color: string }> = {
+  easy: { label: "Easy", color: "text-green-400" },
+  medium: { label: "Medium", color: "text-primary" },
+  hard: { label: "Hard", color: "text-orange-400" },
+  extreme: { label: "Extreme", color: "text-destructive" },
+};
+
+const DIFFICULTIES: Difficulty[] = ["easy", "medium", "hard", "extreme"];
 
 interface Props {
   sentence: string;
   phase: "idle" | "listening" | "results";
   liveText: string;
+  difficulty: Difficulty;
+  onDifficultyChange: (d: Difficulty) => void;
   onStart: () => void;
   onStop: () => void;
   onNext: () => void;
@@ -13,6 +25,8 @@ export default function SentenceDisplay({
   sentence,
   phase,
   liveText,
+  difficulty,
+  onDifficultyChange,
   onStart,
   onStop,
   onNext,
@@ -22,11 +36,33 @@ export default function SentenceDisplay({
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-6 animate-fade-in">
       {/* Header */}
-      <div className="mb-16 flex items-center gap-3">
+      <div className="mb-10 flex items-center gap-3">
         <Mic className="h-5 w-5 text-primary" />
         <span className="font-mono-app text-sm font-medium tracking-widest text-dim uppercase">
           fluency
         </span>
+      </div>
+
+      {/* Difficulty selector */}
+      <div className="mb-12 flex items-center gap-1 rounded-md border border-border bg-card p-1">
+        {DIFFICULTIES.map((d) => {
+          const cfg = DIFFICULTY_CONFIG[d];
+          const active = d === difficulty;
+          return (
+            <button
+              key={d}
+              onClick={() => onDifficultyChange(d)}
+              disabled={isListening}
+              className={`font-mono-app text-xs px-4 py-2 rounded transition-all duration-200 ${
+                active
+                  ? `bg-secondary ${cfg.color} font-medium`
+                  : "text-dim hover:text-foreground hover:bg-secondary/50"
+              } ${isListening ? "opacity-50 cursor-not-allowed" : ""}`}
+            >
+              {cfg.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Main sentence */}
