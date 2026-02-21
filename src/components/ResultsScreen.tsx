@@ -13,61 +13,61 @@ const accuracyColor = (acc: number) => {
   return "text-error";
 };
 
-export default function ResultsScreen({ result, onRetry, onNext }: Props) {
+const ResultsScreen = ({ result, onRetry, onNext }: Props) => {
   const { accuracy, correctWords, missedWords, extraWords, spoken } = result;
   const totalWords = spoken.split(" ").filter(Boolean).length;
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-6 animate-fade-up">
+    <div className="flex min-h-screen flex-col items-center justify-center px-4 sm:px-6 py-8 animate-fade-up">
       {/* Accuracy ring / number */}
-      <div className="mb-10 text-center">
+      <div className="mb-8 sm:mb-10 text-center">
         <p className="font-mono-app text-xs uppercase tracking-widest text-dim mb-3">
           accuracy
         </p>
-        <p className={`font-mono-app text-8xl font-light tracking-tight ${accuracyColor(accuracy)}`}>
+        <p className={`font-mono-app text-6xl sm:text-8xl font-light tracking-tight ${accuracyColor(accuracy)}`}>
           {accuracy}
-          <span className="text-4xl">%</span>
+          <span className="text-3xl sm:text-4xl">%</span>
         </p>
       </div>
 
       {/* Stats row */}
-      <div className="mb-10 flex gap-10 text-center">
+      <div className="mb-8 sm:mb-10 flex gap-6 sm:gap-10 text-center">
         <div>
-          <p className="font-mono-app text-2xl font-light text-foreground">{totalWords}</p>
-          <p className="font-mono-app text-xs text-dim mt-1 uppercase tracking-wider">words spoken</p>
+          <p className="font-mono-app text-xl sm:text-2xl font-light text-foreground">{totalWords}</p>
+          <p className="font-mono-app text-[10px] sm:text-xs text-dim mt-1 uppercase tracking-wider">words spoken</p>
         </div>
         <div>
-          <p className="font-mono-app text-2xl font-light text-correct">{correctWords.length}</p>
-          <p className="font-mono-app text-xs text-dim mt-1 uppercase tracking-wider">correct</p>
+          <p className="font-mono-app text-xl sm:text-2xl font-light text-correct">{correctWords.length}</p>
+          <p className="font-mono-app text-[10px] sm:text-xs text-dim mt-1 uppercase tracking-wider">correct</p>
         </div>
         <div>
-          <p className="font-mono-app text-2xl font-light text-error">{missedWords.length}</p>
-          <p className="font-mono-app text-xs text-dim mt-1 uppercase tracking-wider">missed</p>
+          <p className="font-mono-app text-xl sm:text-2xl font-light text-error">{missedWords.length}</p>
+          <p className="font-mono-app text-[10px] sm:text-xs text-dim mt-1 uppercase tracking-wider">missed</p>
         </div>
       </div>
 
       {/* Divider */}
-      <div className="mb-8 w-full max-w-md border-t border-border" />
+      <div className="mb-6 sm:mb-8 w-full max-w-sm sm:max-w-md border-t border-border" />
 
       {/* What you said */}
-      <div className="mb-6 w-full max-w-md">
+      <div className="mb-5 sm:mb-6 w-full max-w-sm sm:max-w-md">
         <p className="font-mono-app text-xs uppercase tracking-widest text-dim mb-3">you said</p>
-        <p className="font-mono-app text-sm leading-relaxed text-foreground/70">
+        <p className="font-mono-app text-xs sm:text-sm leading-relaxed text-foreground/70">
           {spoken || <span className="italic text-dim">nothing detected</span>}
         </p>
       </div>
 
       {/* Missed words */}
       {missedWords.length > 0 && (
-        <div className="mb-6 w-full max-w-md">
+        <div className="mb-5 sm:mb-6 w-full max-w-sm sm:max-w-md">
           <p className="font-mono-app text-xs uppercase tracking-widest text-dim mb-3">
             missed words
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {missedWords.map((word, i) => (
               <span
                 key={i}
-                className="font-mono-app rounded bg-error/10 px-2.5 py-1 text-xs text-error border border-error/20"
+                className="font-mono-app rounded bg-error/10 px-2 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-xs text-error border border-error/20"
               >
                 {word}
               </span>
@@ -78,15 +78,15 @@ export default function ResultsScreen({ result, onRetry, onNext }: Props) {
 
       {/* Extra words */}
       {extraWords.length > 0 && (
-        <div className="mb-8 w-full max-w-md">
+        <div className="mb-6 sm:mb-8 w-full max-w-sm sm:max-w-md">
           <p className="font-mono-app text-xs uppercase tracking-widest text-dim mb-3">
             extra words
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {extraWords.map((word, i) => (
               <span
                 key={i}
-                className="font-mono-app rounded bg-primary/10 px-2.5 py-1 text-xs text-primary border border-primary/20"
+                className="font-mono-app rounded bg-primary/10 px-2 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-xs text-primary border border-primary/20"
               >
                 {word}
               </span>
@@ -97,30 +97,32 @@ export default function ResultsScreen({ result, onRetry, onNext }: Props) {
 
       {/* Message */}
       {missedWords.length === 0 && (
-        <div className="mb-8 w-full max-w-md">
-          <p className="font-mono-app text-sm text-correct text-center">
+        <div className="mb-6 sm:mb-8 w-full max-w-sm sm:max-w-md">
+          <p className="font-mono-app text-xs sm:text-sm text-correct text-center">
             Perfect! Every word was spoken correctly. 🎉
           </p>
         </div>
       )}
 
       {/* Actions */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4">
         <button
           onClick={onRetry}
-          className="flex items-center gap-2 rounded-md border border-border px-6 py-2.5 font-mono-app text-sm text-dim transition-all duration-200 hover:text-foreground hover:border-foreground/30"
+          className="flex items-center gap-2 rounded-md border border-border px-4 sm:px-6 py-2 sm:py-2.5 font-mono-app text-xs sm:text-sm text-dim transition-all duration-200 hover:text-foreground hover:border-foreground/30"
         >
-          <RefreshCw className="h-3.5 w-3.5" />
+          <RefreshCw className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
           Try Again
         </button>
         <button
           onClick={onNext}
-          className="flex items-center gap-2 rounded-md bg-primary px-6 py-2.5 font-mono-app text-sm font-medium text-primary-foreground transition-all duration-200 hover:bg-primary/85"
+          className="flex items-center gap-2 rounded-md bg-primary px-4 sm:px-6 py-2 sm:py-2.5 font-mono-app text-xs sm:text-sm font-medium text-primary-foreground transition-all duration-200 hover:bg-primary/85"
         >
-          Next Sentence
-          <ChevronRight className="h-4 w-4" />
+          Next
+          <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         </button>
       </div>
     </div>
   );
-}
+};
+
+export default ResultsScreen;

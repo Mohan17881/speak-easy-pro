@@ -181,6 +181,7 @@ export default function FluencyApp() {
   const [liveText, setLiveText] = useState("");
   const [result, setResult] = useState<TestResult | null>(null);
   const recognitionRef = useRef<ISpeechRecognition | null>(null);
+  const fullTranscriptRef = useRef("");
 
   const changeDifficulty = useCallback((d: Difficulty) => {
     setDifficulty(d);
@@ -202,35 +203,39 @@ export default function FluencyApp() {
     const recognition = new SpeechRecognitionAPI();
     recognition.lang = "en-US";
     recognition.interimResults = true;
-    recognition.continuous = false;
+    recognition.continuous = true;
     recognition.maxAlternatives = 1;
 
     recognitionRef.current = recognition;
+    fullTranscriptRef.current = "";
     setLiveText("");
     setPhase("listening");
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
-      let interim = "";
-      let final = "";
-      for (let i = event.resultIndex; i < event.results.length; i++) {
+      let finalText = "";
+      let interimText = "";
+      for (let i = 0; i < event.results.length; i++) {
         const t = event.results[i][0].transcript;
-        if (event.results[i].isFinal) final += t;
-        else interim += t;
+        if (event.results[i].isFinal) {
+          finalText += t + " ";
+        } else {
+          interimText += t;
+        }
       }
-      setLiveText(final || interim);
+      const combined = (finalText + interimText).trim();
+      fullTranscriptRef.current = combined;
+      setLiveText(combined);
     };
 
     recognition.onend = () => {
-      setLiveText((current) => {
-        if (current.trim()) {
-          const res = compareSentences(sentence, current.trim());
-          setResult(res);
-          setPhase("results");
-        } else {
-          setPhase("idle");
-        }
-        return current;
-      });
+      const transcript = fullTranscriptRef.current.trim();
+      if (transcript) {
+        const res = compareSentences(sentence, transcript);
+        setResult(res);
+        setPhase("results");
+      } else {
+        setPhase("idle");
+      }
     };
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
